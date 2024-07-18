@@ -3,10 +3,10 @@ import ReservationError from "./ReservationError";
 import ReservationForm from "./ReservationForm";
 import { createReservation } from "../utils/api";
 import { useHistory } from "react-router-dom";
-import { today } from "../utils/date-time";
 import { useState } from "react";
+import { today } from "../utils/date-time";
 
-
+//COMPLETE OR SO I BELIVE...NEED TO TEST
 // The /reservations/new page will: 
 // have the following required and not-nullable fields:
 // First name: <input name="first_name" />
@@ -15,9 +15,9 @@ import { useState } from "react";
 // Date of reservation: <input name="reservation_date" />
 // Time of reservation: <input name="reservation_time" />
 // Number of people in the party, which must be at least 1 person. <input name="people" />
-// display a Submit button that, when clicked, saves the new reservation, then displays the /dashboard page for the date of the new reservation
-// display a Cancel button that, when clicked, returns the user to the previous page
-// display any error messages returned from the API
+// display a Submit button that, when clicked, saves the new reservation, then displays the /dashboard page for the date of the new reservation  WORKS
+// display a Cancel button that, when clicked, returns the user to the previous page WORKS
+// display any error messages returned from the API CHECKED--WORKS BASED ON BACKEND VALIDATION
 
 
 function ReservationNew () {
@@ -36,11 +36,18 @@ function ReservationNew () {
     const [reservation, setReservation] = useState({ ...initialFormState });
     const [errors, setErrors] = useState(null);
 
-    const handleChange = ({ target }) => {
+    const handleChange = (event) => {
+        if (event.target.name === "people") {
         setReservation({
             ...reservation,
-            [target.name]: target.value,
+            [event.target.name]: Number (event.target.value),
         });
+        } else {
+            setReservation({
+                ...reservation,
+                [event.target.name]: event.target.value,
+           })
+        }   
     };
 
     const handleSubmit = async (event) => {
@@ -59,7 +66,10 @@ function ReservationNew () {
         <div>
             <h1>New Reservation</h1>
             <ReservationError errors={errors} />
-            <ReservationForm reservation={reservation} handleChange={handleChange} handleSubmit={handleSubmit} />
+            <ReservationForm 
+                reservation={reservation} 
+                handleChange={handleChange} 
+                handleSubmit={handleSubmit} />
         </div>
     );
 
