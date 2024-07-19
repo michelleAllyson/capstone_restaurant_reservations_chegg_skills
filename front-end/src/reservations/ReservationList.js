@@ -1,24 +1,61 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
-export const ReservationList = ({ 
-    reservations,
-    handleCancel,
-    handleSeat,
-}) => {
+export const ReservationList = ({ reservations }) => {
 
-    function checkStatus(reservation) {
-        return (
-            reservation.status === "finished" || reservation.status === "cancelled"
-        );
-    }
+    const history = useHistory();
 
-    function formatTime(time) {
+    const checkStatus = (reservation) => {
+        return reservation.status === "finished" || reservation.status === "cancelled";
+    };
+
+    const formatTime = (time) => {
         const [hours, minutes] = time.split(":");
         return `${hours}:${minutes}`;
-    }
+    };
 
-    function renderReservations(reservations) {
+    const handleSeat = (reservation_id) => {
+        history.push(`/reservations/${reservation_id}/seat`);
+    };
+
+    const handleCancel = (reservation_id) => {
+        const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
+        if (result) {
+            history.push(`/reservations/${reservation_id}/cancel`);
+        }
+    };
+
+
+    const renderReservationActions = (reservation) => (
+        <td>
+            <Link to={`/reservations/${reservation.reservation_id}/seat`}>
+                <button
+                    className="btn btn-primary"
+                    disabled={checkStatus(reservation)}
+                    onClick={() => handleSeat(reservation.reservation_id)}
+                >
+                    Seat
+                </button>
+            </Link>
+            <Link to={`/reservations/${reservation.reservation_id}/edit`}>
+                <button
+                    className="btn btn-secondary"
+                    disabled={checkStatus(reservation)}
+                >
+                    Edit
+                </button>
+            </Link>
+            <button
+                className="btn btn-danger"
+                disabled={checkStatus(reservation)}
+                onClick={() => handleCancel(reservation.reservation_id)}
+            >
+                Cancel
+            </button>
+        </td>
+    );
+
+    const renderReservations = (reservations) => {
         if (reservations.length === 0) {
             return (
                 <tr>
@@ -34,39 +71,30 @@ export const ReservationList = ({
                     <td>{reservation.people}</td>
                     <td>{formatTime(reservation.reservation_time)}</td>
                     <td>{checkStatus(reservation) ? "finished" : reservation.status}</td>
-                    <td>
-                        <Link to={`/reservations/${reservation.reservation_id}/seat`}>
-                            <button
-                                className="btn btn-primary"
-                                disabled={checkStatus(reservation)}
-                                onClick={() => handleSeat(reservation.reservation_id)}
-                            >
-                                Seat
-                            </button>
-                        </Link>
-                        <Link to={`/reservations/${reservation.reservation_id}/edit`}>
-                            <button
-                                className="btn btn-secondary"
-                                disabled={checkStatus(reservation)}
-                            >
-                                Edit
-                            </button>
-                        </Link>
-                        <button
-                            className="btn btn-danger"
-                            disabled={checkStatus(reservation)}
-                            onClick={() => handleCancel(reservation.reservation_id)}
-                        >
-                            Cancel
-                        </button>
-                    </td>
+                    {renderReservationActions(reservation)}
                 </tr>
             ));
         }
-    }
+    };
 
-    return (renderReservations(reservations));
-}
-
+    return (
+        <table className="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>People</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {renderReservations(reservations)}
+            </tbody>
+        </table>
+    );
+};
 
 export default ReservationList;

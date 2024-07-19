@@ -8,6 +8,8 @@ import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import ReservationNew from "../reservations/ReservationNew";
 import TableNew from "../tables/TableNew";
+import ReservationSeat from "../reservations/ReservationSeat";
+import ReservationEdit from "../reservations/ReservationEdit";
 
 /**
  * Defines all the routes for the application.
@@ -33,6 +35,12 @@ function Routes() {
       </Route>
       <Route path="/reservations/new">
         <ReservationNew />
+      </Route>
+      <Route path="/reservations/:reservation_id/seat">
+        <ReservationSeat />
+      </Route>
+      <Route path="/reservations/:reservation_id/edit"> 
+        <ReservationEdit />
       </Route>
       <Route path="/tables/new"> 
         <TableNew />
