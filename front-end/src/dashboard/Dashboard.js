@@ -8,6 +8,7 @@ import { today } from "../utils/date-time";
 // import { formatAsDate } from "../utils/date-time";
 import moment from "moment";
 
+//CANCEL button on Dashboard page not functioning correctly 
 
 //NEED TO RETURN TO THIS AFTER WORKING ON THE RESERVATIONS COMPONENT
 

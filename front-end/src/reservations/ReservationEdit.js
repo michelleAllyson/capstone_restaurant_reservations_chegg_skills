@@ -1,11 +1,10 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 import { readReservation, updateReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
 
 export const ReservationEdit = () => {
-
     const initialReservationState = {
         first_name: "",
         last_name: "",
@@ -15,10 +14,7 @@ export const ReservationEdit = () => {
         people: 0,
     };
 
-    const [reservation, setReservation] = useState ({
-        ...initialReservationState,
-    });
-
+    const [reservation, setReservation] = useState({ ...initialReservationState });
     const [errors, setErrors] = useState(null);
     const { reservation_id } = useParams();
     const history = useHistory();
@@ -31,18 +27,12 @@ export const ReservationEdit = () => {
         return () => abortController.abort();
     }, [reservation_id]);
 
-    const handleChange = ({ event }) => {
-        if (event.target.name === "people") {
-            setReservation({
-                ...reservation,
-                [event.target.name]: Number(event.target.value),
-            });
-        } else {    
-            setReservation({
-                ...reservation,
-                [event.target.name]: event.target.value,
-            });
-        }
+    const handleChange = ({ target }) => {
+        const value = target.name === "people" ? Number(target.value) : target.value;
+        setReservation({
+            ...reservation,
+            [target.name]: value,
+        });
     };
 
     const handleSubmit = async (event) => {
@@ -50,16 +40,14 @@ export const ReservationEdit = () => {
         const abortController = new AbortController();
 
         try {
-            await updateReservation(reservation, abortController.signal);
+            await updateReservation({ ...reservation, reservation_id }, abortController.signal);
             history.push(`/dashboard?date=${reservation.reservation_date}`);
-          } catch (error) {
+        } catch (error) {
             setErrors([error]);
-          }
-      
-          return () => abortController.abort();
-        };
-    
+        }
 
+        return () => abortController.abort();
+    };
 
     return (
         <div>
@@ -72,6 +60,6 @@ export const ReservationEdit = () => {
             />
         </div>
     );
-    
 };
+
 export default ReservationEdit;

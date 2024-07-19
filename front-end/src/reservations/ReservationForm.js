@@ -1,10 +1,9 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-export const ReservationForm = ({ reservation, handleChange, handleSubmit}) => {
-
+export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => {
     const history = useHistory();
-    
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -81,9 +80,9 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit}) => {
                     <button 
                         type="submit"
                         className="btn btn-primary"
-                        >
-                            Submit
-                        </button>
+                    >
+                        Submit
+                    </button>
                     <button 
                         className="btn btn-danger"
                         type="button"
@@ -94,8 +93,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit}) => {
                 </div>
             </form>
         </div>
-    )
-
+    );
 }
 
 export default ReservationForm;
