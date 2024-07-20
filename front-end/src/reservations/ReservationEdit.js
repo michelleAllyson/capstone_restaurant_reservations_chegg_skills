@@ -1,8 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
 import { readReservation, updateReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
+import ReservationError from "./ReservationError";
+
+// The /dashboard and the /search page will
+// Display an "Edit" button next to each reservation
+// Clicking the "Edit" button will navigate the user to the /reservations/:reservation_id/edit page
+// the "Edit" button must be a link with an href attribute that equals /reservations/${reservation_id}/edit, so it can be found by the tests.
+// Display a "Cancel" button next to each reservation
+// The Cancel button must have a data-reservation-id-cancel={reservation.reservation_id} attribute, so it can be found by the tests.
+// Clicking the "Cancel" button will display the following confirmation: "Do you want to cancel this reservation? This cannot be undone."
+// Clicking "Ok" on the confirmation dialog, sets the reservation status to cancelled, and the results on the page are refreshed.
+// set the status of the reservation to cancelled using a PUT to /reservations/:reservation_id/status with a body of {data: { status: "cancelled" } }.
+// Clicking "Cancel" on the confirmation dialog makes no changes.
+// The /reservations/:reservation_id/edit page will display the reservation form with the existing reservation data filled in
+// Only reservations with a status of "booked" can be edited.
+// Clicking the "Submit" button will save the reservation, then displays the previous page.
+// Clicking "Cancel" makes no changes, then display the previous page.
+
+
 
 export const ReservationEdit = () => {
     const initialReservationState = {
@@ -27,11 +44,11 @@ export const ReservationEdit = () => {
         return () => abortController.abort();
     }, [reservation_id]);
 
-    const handleChange = ({ target }) => {
-        const value = target.name === "people" ? Number(target.value) : target.value;
+    const handleChange = (event) => {
+        const { name, value } = event.target;
         setReservation({
             ...reservation,
-            [target.name]: value,
+            [name]: name === "people" ? Number(value) : value,
         });
     };
 
@@ -39,11 +56,21 @@ export const ReservationEdit = () => {
         event.preventDefault();
         const abortController = new AbortController();
 
+        // Additional validation
+        const { reservation_time } = reservation;
+        const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        if (!timePattern.test(reservation_time)) {
+            setErrors(["Invalid reservation_time format. Please use HH:MM format."]);
+            return;
+        }
+
+        console.log("Submitting reservation:", reservation);
+
         try {
             await updateReservation({ ...reservation, reservation_id }, abortController.signal);
             history.push(`/dashboard?date=${reservation.reservation_date}`);
         } catch (error) {
-            setErrors([error]);
+            setErrors([error.message || error.toString()]);
         }
 
         return () => abortController.abort();
@@ -52,7 +79,7 @@ export const ReservationEdit = () => {
     return (
         <div>
             <h1>Edit Reservation</h1>
-            <ErrorAlert error={errors} />
+            <ReservationError errors={errors} />
             <ReservationForm
                 reservation={reservation}
                 handleChange={handleChange}
