@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
+import { updateStatus } from "../utils/api";
 
 export const ReservationList = ({ reservations }) => {
 
@@ -18,10 +19,15 @@ export const ReservationList = ({ reservations }) => {
         history.push(`/reservations/${reservation_id}/seat`);
     };
 
-    const handleCancel = (reservation_id) => {
+    const handleCancel = async (reservation_id) => {
         const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
         if (result) {
-            history.push(`/reservations/${reservation_id}/cancel`);
+            try {
+                await updateStatus(reservation_id, "cancelled");
+                history.go(0); 
+            } catch (error) {
+                console.error("Failed to cancel the reservation:", error);
+            }
         }
     };
 
@@ -49,6 +55,7 @@ export const ReservationList = ({ reservations }) => {
                 className="btn btn-danger"
                 disabled={checkStatus(reservation)}
                 onClick={() => handleCancel(reservation.reservation_id)}
+                data-reservation-id-cancel={reservation.reservation_id} 
             >
                 Cancel
             </button>
@@ -70,7 +77,7 @@ export const ReservationList = ({ reservations }) => {
                     <td>{reservation.last_name}</td>
                     <td>{reservation.people}</td>
                     <td>{formatTime(reservation.reservation_time)}</td>
-                    <td>{checkStatus(reservation) ? "finished" : reservation.status}</td>
+                    <td>{reservation.status}</td> 
                     {renderReservationActions(reservation)}
                 </tr>
             ));

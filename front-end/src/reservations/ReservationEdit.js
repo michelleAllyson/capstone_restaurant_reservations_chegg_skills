@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { readReservation, updateReservation } from "../utils/api";
+import { formatAsTime } from "../utils/date-time";
 import ReservationForm from "./ReservationForm";
 import ReservationError from "./ReservationError";
 
@@ -56,13 +57,24 @@ export const ReservationEdit = () => {
         event.preventDefault();
         const abortController = new AbortController();
 
+        const formattedTime = formatAsTime(reservation.reservation_time);
+    
         try {
-            await updateReservation({ ...reservation, reservation_id }, abortController.signal);
+            await updateReservation(
+                { 
+                    ...reservation, 
+                    reservation_id, 
+                    reservation_time: formattedTime 
+                }, 
+                abortController.signal
+            );
             history.push(`/dashboard?date=${reservation.reservation_date}`);
         } catch (error) {
-            setErrors([error.message || error.toString()]);
+            setErrors([error]);
         }
-
+    
+        console.log(reservation);
+    
         return () => abortController.abort();
     };
 
