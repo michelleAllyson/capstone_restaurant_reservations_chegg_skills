@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, updateStatus } from "../utils/api";
 import ReservationList from "../reservations/ReservationList";
 import { useHistory } from "react-router-dom";
 
@@ -28,65 +28,79 @@ function ReservationSearch() {
     const [errors, setErrors] = useState(null);
     const history = useHistory();
 
+    // const handleChange = ({ target }) => {
+    //     setMobile_number(target.value);
+    // };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         setErrors(null);
-        listReservations({mobile_number})
-        .then((response) => {
-          setReservations(response)
-          history.push('/search')
-        })
-        .catch(setErrors('No reservations found'))
-    }
 
+        if (mobile_number.trim() === "") {
+            setErrors("Please enter a phone number.");
+            return;
+        }
+
+        listReservations({ mobile_number })
+            .then((response) => {
+                if (response.length === 0) {
+                    setErrors("No reservations found");
+                } else {
+                    setReservations(response);
+                    history.push("/search");
+                }
+            })
+            .catch((error) => {
+                setErrors(error.message || "Error fetching reservations");
+            });
+    };
     return (
         <>
-          <div className="mb-3">
-              <h1> Find Reservation </h1>
-          </div>
-          
-          <form className="form-group mb-3" onSubmit={handleSubmit}>
-            <input
-              type="search"
-              name="mobile_number"
-              className="form-control rounded mb-2"
-              placeholder="Enter a customer's phone number"
-              onChange={(event) => setMobile_number(event.target.value)}
-              value={mobile_number}
-            />
-            <div>
-              <button type="submit" className="btn btn-primary"> find </button>
+            <div className="mb-3">
+                <h1>Find Reservation</h1>
             </div>
-          </form>
-          <br />
-          {reservations && reservations.length ?
-          <div>
-            <h3 className="mb-3"> Matching Reservations </h3>
-            <table className="table table-striped">
-              <thead>
-                <th scope="col"> Reservation ID </th>
-                <th scope="col"> First Name </th>
-                <th scope="col"> Last Name </th>
-                <th scope="col"> Party Size </th>
-                <th scope="col"> Phone Number </th>
-                <th scope="col"> Reservation Date </th>
-                <th scope="col"> Reservation Time </th>
-                <th scope="col"> Reservation Status </th>
-              </thead>
-              <tbody>
-                {reservations.map((res) => (
-                    <ReservationList reservations={reservations} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-          :
-          <>
-            <p className="alert alert-danger"> {errors} </p>
-          </>
-          }
+
+            <form className="form-group mb-3" onSubmit={handleSubmit}>
+                <input
+                    type="search"
+                    name="mobile_number"
+                    className="form-control rounded mb-2"
+                    placeholder="Enter a customer's phone number"
+                    onChange={(event) => setMobile_number(event.target.value)}
+                    value={mobile_number}
+                />
+                <div>
+                    <button type="submit" className="btn btn-primary">Find</button>
+                </div>
+            </form>
+            <br />
+            {errors && (
+                <p className="alert alert-danger">{errors}</p>
+            )}
+            {reservations.length > 0 && (
+                <div>
+                    <h3 className="mb-3">Matching Reservations</h3>
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Reservation ID</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Party Size</th>
+                                <th scope="col">Phone Number</th>
+                                <th scope="col">Reservation Date</th>
+                                <th scope="col">Reservation Time</th>
+                                <th scope="col">Reservation Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <ReservationList reservations={reservations} />
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </>
-      );
-    }
+    );
+}
 
 export default ReservationSearch;
