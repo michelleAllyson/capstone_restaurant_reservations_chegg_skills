@@ -56,16 +56,6 @@ export const ReservationEdit = () => {
         event.preventDefault();
         const abortController = new AbortController();
 
-        // Additional validation
-        const { reservation_time } = reservation;
-        const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
-        if (!timePattern.test(reservation_time)) {
-            setErrors(["Invalid reservation_time format. Please use HH:MM format."]);
-            return;
-        }
-
-        console.log("Submitting reservation:", reservation);
-
         try {
             await updateReservation({ ...reservation, reservation_id }, abortController.signal);
             history.push(`/dashboard?date=${reservation.reservation_date}`);
