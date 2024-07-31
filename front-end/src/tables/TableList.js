@@ -12,15 +12,15 @@ export const TableList = ({ tables, handleFinish }) => {
                     <p>Capacity: {table.capacity}</p>
                     <p>Occupied: {table.occupied ? "Yes" : "No"}</p>
                     <p>Reservation ID: {table.reservation_id}</p>
-                    <Link to={`/tables/${table.table_id}/seat`}>
+                    {/* <Link to={`/tables/${table.table_id}/seat`}> */}
                         <button
                             className="btn btn-primary"
-                            disabled={!table.occupied}
+                            data-table-id-finish={table.table_id}
                             onClick={() => handleFinish(table.table_id)}
                         >
                             Finish
                         </button>
-                    </Link>
+                    {/* </Link> */}
                 </div>
             ))}
         </div>

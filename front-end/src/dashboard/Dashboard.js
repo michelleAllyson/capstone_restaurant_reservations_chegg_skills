@@ -5,6 +5,7 @@ import ReservationList from "../reservations/ReservationList";
 import { useHistory } from "react-router-dom";
 import { previous, next } from "../utils/date-time";
 import { today } from "../utils/date-time";
+import TableList from "../tables/TableList";
 // import { formatAsDate } from "../utils/date-time";
 import moment from "moment";
 
@@ -57,6 +58,9 @@ function Dashboard({ date }) {
       await finishTable(table_id, abortController.signal);
       loadDashboard();
     }
+
+    return () => abortController.abort();
+
   }
 
   const handleCancel = async (event)  => {
@@ -66,6 +70,7 @@ function Dashboard({ date }) {
       await updateStatus(event.target.value, "cancelled");
       loadDashboard();
     }
+    
   }
 
 
@@ -82,7 +87,11 @@ function Dashboard({ date }) {
         <button className="btn btn-primary" onClick={() => history.push(`/dashboard?date=${today()}`)}>Today</button>
         <button className="btn btn-secondary" onClick={() => history.push(`/dashboard?date=${next(date)}`)}>Next</button>
       </div>
-      <ReservationList reservations={reservations} handleCancel={handleCancel} handleFinish={handleFinish} /> 
+      <ReservationList reservations={reservations} handleCancel={handleCancel}  /> 
+      <div id="tables">
+        <h2>Tables</h2>
+        <TableList tables={tables} handleFinish={handleFinish} />
+      </div>
     </main>
   );
 }
