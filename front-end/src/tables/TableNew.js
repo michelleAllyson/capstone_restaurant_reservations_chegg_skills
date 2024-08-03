@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
 import TableError from "./TableError";
@@ -13,17 +13,17 @@ import TableError from "./TableError";
 // display a Cancel button that, when clicked, returns the user to the previous page
 
 
-function TableNew() {
-
-    const history = useHistory();
-
+export const TableNew = () => {
     const initialTableState = {
-        table_name: "",
-        capacity: 0,
+      table_name: "",
+      capacity: 0,
     };
 
-    const [table, setTable] = React.useState({ ...initialTableState });
-    const [errors, setErrors] = React.useState(null);
+    const [table, setTable] = useState({
+        ...initialTableState,
+      });
+      const [errors, setErrors] = useState(null);
+      const history = useHistory();
 
     const handleChange = (event) => {
         if (event.target.name === "capacity") {
@@ -39,17 +39,17 @@ function TableNew() {
         }
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         const abortController = new AbortController();
-        try {
-            const response = await createTable(table, abortController.signal);
-            history.push(`/dashboard`);
-            return response;
-        } catch (error) {
-            setErrors(error);
-        }
-    };
+        
+        createTable(table, abortController.signal)
+          .then(history.push(`/dashboard`))
+          .catch(setErrors);
+    
+        return () => abortController.abort();
+      };
+
 
     return (
         <div>

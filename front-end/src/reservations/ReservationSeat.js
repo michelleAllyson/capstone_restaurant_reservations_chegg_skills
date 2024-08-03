@@ -10,29 +10,38 @@ export const ReservationSeat = () => {
     const [table_id, setTable_id] = useState(0);
 
     useEffect(() => {
-        const abortController = new AbortController();
-        listTables(abortController.signal).then(setTables);
-        readReservation(reservation_id, abortController.signal).then(setReservation);
-        return () => abortController.abort();
-    }, [reservation_id]);
+        listTables().then(setTables);
+      }, []);
+    
+      useEffect(() => {
+        readReservation(reservation_id).then(setReservation);
+      }, [reservation_id]);
 
-    const handleChange = ({ target }) => {
-        setTable_id(target.value);
+    const handleChange = (event) => {
+        setTable_id(event.target.value);
     };
 
-    const handleCancel = (event) => {
-        event.preventDefault();
-        history.goBack();
-    }
+    // const handleCancel = (event) => {
+    //     event.preventDefault();
+    //     history.goBack();
+    // }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const abortController = new AbortController();
-        updateTable(table_id, reservation_id, abortController.signal)
-            .then(() => history.push("/dashboard"))
-            .catch(console.error);
-        return () => abortController.abort();
+        event.stopPropagation();
+
+        await updateTable(reservation.reservation_id, table_id);
+        history.push("/dashboard");
     };
+
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+    //     const abortController = new AbortController();
+    //     updateTable(table_id, reservation_id, abortController.signal)
+    //         .then(() => history.push("/dashboard"))
+    //         .catch(console.error);
+    //     return () => abortController.abort();
+    // };
 
     return (
         <section>
@@ -59,16 +68,24 @@ export const ReservationSeat = () => {
                     ))}
                 </select>
                 <div>
-                    <button type="submit" className="btn btn-primary">
-                        Submit
-                    </button>
-                    <button type="button" onClick={handleCancel} className="btn btn-secondary">
+                    <button 
+                    type="button" 
+                    onClick={() => history.goBack()} 
+                    className="btn btn-secondary"
+                    >
                         Cancel
+                    </button>
+                    <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    >
+                        Submit
                     </button>
                 </div>
             </form>
         </section>
     );
 }
+
 
 export default ReservationSeat;

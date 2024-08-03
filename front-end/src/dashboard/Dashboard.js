@@ -51,7 +51,7 @@ function Dashboard({ date }) {
   async function handleFinish(table_id) {
     const abortController = new AbortController();
     const result = window.confirm(
-      "Is this table ready to seat new guests? This cannot be undone"
+      "Is this table ready to seat new guests? This cannot be undone."
     );
 
     if (result) {
@@ -60,7 +60,6 @@ function Dashboard({ date }) {
     }
 
     return () => abortController.abort();
-
   }
 
   const handleCancel = async (event)  => {
