@@ -47,20 +47,55 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  // async function handleFinish(table_id) {
+  //   const abortController = new AbortController();
+  //   const result = window.confirm(
+  //     "Is this table ready to seat new guests? This cannot be undone."
+  //   );
 
-  async function handleFinish(table_id) {
+  //   if (result) {
+  //     await finishTable(table_id, abortController.signal);
+  //     loadDashboard();
+  //   }
+
+  //   return () => abortController.abort();
+  // }
+  
+ async function handleFinish(table_id) {
     const abortController = new AbortController();
     const result = window.confirm(
       "Is this table ready to seat new guests? This cannot be undone."
     );
 
     if (result) {
-      await finishTable(table_id, abortController.signal);
-      loadDashboard();
+      try {
+        await finishTable(table_id, abortController.signal);
+        setTables((prevTables) =>
+          prevTables.map((table) =>
+            table.table_id === table_id ? { ...table, occupied: false, reservation_id: null } : table
+          )
+        );
+        loadDashboard();
+      } catch (error) {
+        console.error("Error finishing the table:", error);
+      }
     }
 
     return () => abortController.abort();
-  }
+  };
+  // async function handleFinish(table_id) {
+  //   const abortController = new AbortController();
+  //   const result = window.confirm(
+  //     "Is this table ready to seat new guests? This cannot be undone."
+  //   );
+
+  //   if (result) {
+  //     await finishTable(table_id, abortController.signal);
+  //     loadDashboard();
+  //   }
+
+  //   return () => abortController.abort();
+  // }
 
   const handleCancel = async (event)  => {
     const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
@@ -72,6 +107,15 @@ function Dashboard({ date }) {
     
   }
 
+//Revisit this--when booking is "cancelled" after the table was "seated", the table is not "free" again
+
+  // const handleCancel = (tableId) => {
+  //   setTables((prevTables) =>
+  //     prevTables.map((table) =>
+  //       table.table_id === tableId ? { ...table, occupied: false, reservation_id: null } : table
+  //     )
+  //   );
+  // };
 
 
   return (
