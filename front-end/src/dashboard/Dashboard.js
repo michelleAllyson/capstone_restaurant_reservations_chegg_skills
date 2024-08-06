@@ -27,17 +27,20 @@ function Dashboard({ date }) {
 
   function loadDashboard() {
     const abortController = new AbortController();
-   
+
     setErrors(null);
     listReservations({ date }, abortController.signal)
-      .then(setReservations)
+      .then(reservations => {
+        // Filter out cancelled reservations
+        const activeReservations = reservations.filter(reservation => reservation.status !== "cancelled");
+        setReservations(activeReservations);
+      })
       .catch(setErrors);
 
     listTables().then(setTables);
 
     return () => abortController.abort();
   }
-
   
  async function handleFinish(table_id) {
     const abortController = new AbortController();
@@ -98,3 +101,5 @@ function Dashboard({ date }) {
 }
 
 export default Dashboard;
+
+
