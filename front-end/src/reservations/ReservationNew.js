@@ -33,14 +33,21 @@ function ReservationNew() {
         event.preventDefault();
         const abortController = new AbortController();
         
-        // Additional validation (if necessary)
         const { reservation_time } = reservation;
         const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        const minTime = "10:30";
+    
         if (!timePattern.test(reservation_time)) {
             setErrors(["Invalid reservation_time format. Please use HH:MM format."]);
             return;
         }
-
+    
+        // Check if reservation time is before 10:30 AM
+        if (reservation_time < minTime) {
+            setErrors(["Reservation time must be after 10:30 AM."]);
+            return;
+        }
+    
         try {
             await createReservation(reservation, abortController.signal);
             history.push(`/dashboard?date=${reservation.reservation_date}`);
@@ -48,7 +55,7 @@ function ReservationNew() {
             setErrors([error.message || error.toString()]);
         }
     };
-
+    
     return (
         <div>
             <h1>New Reservation</h1>

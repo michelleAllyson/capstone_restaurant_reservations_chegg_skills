@@ -3,27 +3,15 @@ import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
 import TableError from "./TableError";
 
-
-// The /tables/new page will
-
-// have the following required and not-nullable fields:
-// Table name: <input name="table_name" />, which must be at least 2 characters long.
-// Capacity: <input name="capacity" />, this is the number of people that can be seated at the table, which must be at least 1 person.
-// display a Submit button that, when clicked, saves the new table then displays the /dashboard page
-// display a Cancel button that, when clicked, returns the user to the previous page
-
-
 export const TableNew = () => {
     const initialTableState = {
-      table_name: "",
-      capacity: 0,
+        table_name: "",
+        capacity: 0,
     };
 
-    const [table, setTable] = useState({
-        ...initialTableState,
-      });
-      const [errors, setErrors] = useState(null);
-      const history = useHistory();
+    const [table, setTable] = useState({ ...initialTableState });
+    const [errors, setErrors] = useState([]);
+    const history = useHistory();
 
     const handleChange = (event) => {
         if (event.target.name === "capacity") {
@@ -35,21 +23,37 @@ export const TableNew = () => {
             setTable({
                 ...table,
                 [event.target.name]: event.target.value,
-            })    
+            });
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const abortController = new AbortController();
-        
-        createTable(table, abortController.signal)
-          .then(history.push(`/dashboard`))
-          .catch(setErrors);
-    
-        return () => abortController.abort();
-      };
 
+        // Validate the table_name and capacity
+        const newErrors = [];
+        if (table.table_name.length < 2) {
+            newErrors.push("Table name must be at least 2 characters long.");
+        }
+        if (table.capacity < 1) {
+            newErrors.push("Capacity must be at least 1.");
+        }
+
+        if (newErrors.length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        const abortController = new AbortController();
+        try {
+            await createTable(table, abortController.signal);
+            history.push(`/dashboard`);
+        } catch (error) {
+            setErrors([error.message || error.toString()]);
+        }
+
+        return () => abortController.abort();
+    };
 
     return (
         <div>
@@ -75,11 +79,10 @@ export const TableNew = () => {
                     required
                 />
                 <button type="submit">Submit</button>
-                <button onClick={() => history.goBack()}>Cancel</button>
+                <button type="button" onClick={() => history.goBack()}>Cancel</button>
             </form>
         </div>
-    )
-
-}
+    );
+};
 
 export default TableNew;

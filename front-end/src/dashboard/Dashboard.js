@@ -9,15 +9,6 @@ import TableList from "../tables/TableList";
 // import { formatAsDate } from "../utils/date-time";
 import moment from "moment";
 
-//CANCEL button not functioning
-//CANNOT RUN TESTS UNTIL USING 'TABLES'--RETURN TO THIS NEXT
-
-//NEED TO RETURN TO THIS AFTER WORKING ON THE RESERVATIONS COMPONENT
-
-// list all reservations for one date only. (E.g. if the URL is /dashboard?date=2035-12-30 then send a GET to /reservations?date=2035-12-30 to list the reservations for that date). The date is defaulted to today, and the reservations are sorted by time.
-// display next, previous, and today buttons that allow the user to see reservations on other dates
-// display any error messages returned from the API--
-
 
 /**
  * Defines the dashboard page.
@@ -47,19 +38,6 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-  // async function handleFinish(table_id) {
-  //   const abortController = new AbortController();
-  //   const result = window.confirm(
-  //     "Is this table ready to seat new guests? This cannot be undone."
-  //   );
-
-  //   if (result) {
-  //     await finishTable(table_id, abortController.signal);
-  //     loadDashboard();
-  //   }
-
-  //   return () => abortController.abort();
-  // }
   
  async function handleFinish(table_id) {
     const abortController = new AbortController();
@@ -83,19 +61,7 @@ function Dashboard({ date }) {
 
     return () => abortController.abort();
   };
-  // async function handleFinish(table_id) {
-  //   const abortController = new AbortController();
-  //   const result = window.confirm(
-  //     "Is this table ready to seat new guests? This cannot be undone."
-  //   );
 
-  //   if (result) {
-  //     await finishTable(table_id, abortController.signal);
-  //     loadDashboard();
-  //   }
-
-  //   return () => abortController.abort();
-  // }
 
   const handleCancel = async (event)  => {
     const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
@@ -107,15 +73,7 @@ function Dashboard({ date }) {
     
   }
 
-//Revisit this--when booking is "cancelled" after the table was "seated", the table is not "free" again
 
-  // const handleCancel = (tableId) => {
-  //   setTables((prevTables) =>
-  //     prevTables.map((table) =>
-  //       table.table_id === tableId ? { ...table, occupied: false, reservation_id: null } : table
-  //     )
-  //   );
-  // };
 
 
   return (
