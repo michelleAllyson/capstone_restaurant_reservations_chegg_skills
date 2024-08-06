@@ -25,7 +25,7 @@ export const TableList = ({ tables, handleFinish }) => {
               </td>
               <td>{table.reservation_id}</td>
               <td>
-                {table.occupied && (
+                {table.reservation_id && (
                   <button
                     className="btn btn-primary"
                     data-table-id-finish={table.table_id}

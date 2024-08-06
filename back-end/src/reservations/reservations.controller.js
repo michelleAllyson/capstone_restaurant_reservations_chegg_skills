@@ -221,14 +221,30 @@ function notTuesday(req, res, next) {
   /**
    * List handler for reservation resources
    */
+  // async function list(req, res) {
+  //   const date = req.query.date;
+  //   const mobile_number = req.query.mobile_number;
+  //   const data = await (date 
+  //     ? reservationsService.list(date)
+  //     : reservationsService.search(mobile_number));
+  //   res.json({ data });
+  //   }
+
+
+
   async function list(req, res) {
     const date = req.query.date;
     const mobile_number = req.query.mobile_number;
-    const data = await (date 
-      ? reservationsService.list(date)
-      : reservationsService.search(mobile_number));
-    res.json({ data });
+    let data;
+  
+    if (date) {
+      data = await reservationsService.list(date);
+    } else {
+      data = await reservationsService.search(mobile_number);
     }
+  
+    res.json({ data });
+  }
 
 async function read(req, res, next) {
   const { reservation_id } = req.params;
