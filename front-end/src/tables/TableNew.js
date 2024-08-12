@@ -30,7 +30,6 @@ export const TableNew = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Validate the table_name and capacity
         const newErrors = [];
         if (table.table_name.length < 2) {
             newErrors.push("Table name must be at least 2 characters long.");
@@ -57,29 +56,43 @@ export const TableNew = () => {
 
     return (
         <div>
-            <h1>Create Table</h1>
-            <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+                <h1>Create Table</h1>
+            </div>
+            <form onSubmit={handleSubmit} className="form-group">
                 <TableError errors={errors} />
-                <label htmlFor="table_name">Table Name:</label>
-                <input
-                    id="table_name"
-                    name="table_name"
-                    type="text"
-                    onChange={handleChange}
-                    value={table.table_name}
-                    required
-                />
-                <label htmlFor="capacity">Capacity:</label>
-                <input
-                    id="capacity"
-                    name="capacity"
-                    type="number"
-                    onChange={handleChange}
-                    value={table.capacity}
-                    required
-                />
-                <button type="submit">Submit</button>
-                <button type="button" onClick={() => history.goBack()}>Cancel</button>
+                <div className="form-group mb-3">
+                    <label htmlFor="table_name">Table Name:</label>
+                    <input
+                        id="table_name"
+                        name="table_name"
+                        type="text"
+                        className="form-control"
+                        placeholder="Table Name"
+                        onChange={handleChange}
+                        value={table.table_name}
+                        required
+                        style={{ maxWidth: "300px" }}  // Adjust as needed
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label htmlFor="capacity">Capacity:</label>
+                    <input
+                        id="capacity"
+                        name="capacity"
+                        type="number"
+                        className="form-control"
+                        placeholder="Capacity"
+                        onChange={handleChange}
+                        value={table.capacity}
+                        required
+                        style={{ maxWidth: "150px" }}  // Adjust as needed
+                    />
+                </div>
+                <div>
+                    <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                    <button type="button" className="btn btn-danger" onClick={() => history.goBack()}>Cancel</button>
+                </div>
             </form>
         </div>
     );

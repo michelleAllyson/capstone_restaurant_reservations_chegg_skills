@@ -1,13 +1,14 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import "./ReservationForm.css";
 
 export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => {
     const history = useHistory();
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <div>
+            <form onSubmit={handleSubmit} className="reservation-form">
+                <div className="form-group">
                     <label htmlFor="first_name">First Name:</label>
                     <input 
                         type="text" 
@@ -18,7 +19,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                         onChange={handleChange}    
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="last_name">Last Name:</label>
                     <input 
                         type="text" 
@@ -29,7 +30,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                         onChange={handleChange}    
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="mobile_number">Mobile Number:</label>
                     <input 
                         type="text" 
@@ -40,7 +41,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                         onChange={handleChange}    
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="reservation_date">Reservation Date:</label>
                     <input 
                         type="date" 
@@ -52,7 +53,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                         onChange={handleChange}
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="reservation_time">Reservation Time:</label>
                     <input 
                         type="time" 
@@ -64,7 +65,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                         onChange={handleChange}
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="people">Number of People:</label>
                     <input 
                         type="number" 
@@ -76,7 +77,7 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                         onChange={handleChange}    
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <button 
                         type="submit"
                         className="btn btn-primary"
