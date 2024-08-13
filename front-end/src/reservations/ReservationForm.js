@@ -33,12 +33,15 @@ export const ReservationForm = ({ reservation, handleChange, handleSubmit }) => 
                 <div className="form-group">
                     <label htmlFor="mobile_number">Mobile Number:</label>
                     <input 
-                        type="text" 
-                        name="mobile_number" 
-                        placeholder="Mobile Number"
-                        required={true}
-                        value={reservation.mobile_number}
-                        onChange={handleChange}    
+                         name="mobile_number"
+                         type="number"
+                         id="mobile_number"
+                         pattern=".{10,10}" 
+                         class="input_fields"
+                         onChange={handleChange}
+                         value={reservation.mobile_number}
+                         placeholder="Phone number (+91)"
+                         required={true}
                     />
                 </div>
                 <div className="form-group">
